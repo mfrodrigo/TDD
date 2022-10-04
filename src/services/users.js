@@ -6,7 +6,7 @@ module.exports = (app) => {
     if (!user.email) return { error: 'Email é um atributo obrigatório.' };
     if (!user.password) return { error: 'Senha é um atributo obrigatório.' };
     const userDb = await findAll({ email: user.email });
-    if (userDb.length > 0) return { error: 'Já existe um usuário com esse email.' };
+    if (userDb && userDb.length > 0) return { error: 'Já existe um usuário com esse email.' };
     return app.db('users').insert(user, '*');
   };
 
