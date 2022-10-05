@@ -39,3 +39,17 @@ test('Deve rotornar conta por Id', () => app.services.accounts.save({ name: 'Acc
     expect(response.body.name).toBe('AccId');
     expect(response.body.user_id).toBe(user.id);
   }));
+
+test('Deve alterar uma conta', () => app.services.accounts.save({ name: 'Acc To Update', user_id: user.id })
+  .then((account) => request(app).put(`${MAIN_ROUTE}/${account[0].id}`)
+    .send({ name: 'Acc Updated' })
+    .then((response) => {
+      expect(response.status).toBe(200);
+      expect(response.body.name).toBe('Acc Updated');
+    })));
+
+test('Deve remover uma conta', () => app.services.accounts.save({ name: 'Delete', user_id: user.id })
+  .then((account) => request(app).delete(`${MAIN_ROUTE}/${account[0].id}`)
+    .then((response) => {
+      expect(response.status).toBe(204);
+    })));

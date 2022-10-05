@@ -7,5 +7,14 @@ module.exports = (app) => {
 
   const create = (req, res) => app.services.accounts.save(req.body)
     .then((result) => res.status(201).json(result[0]));
-  return { create, findAll, findById };
+
+  const update = (req, res) => app.services.accounts.update(req.params.id, req.body)
+    .then((result) => res.status(200).json(result[0]));
+
+  const remove = (req, res) => app.services.accounts.remove(req.params.id)
+    .then((result) => res.status(204).json(result));
+
+  return {
+    findById, findAll, update, create, remove,
+  };
 };
