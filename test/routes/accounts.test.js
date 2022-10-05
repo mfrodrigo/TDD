@@ -24,6 +24,14 @@ test('Deve inserir uma conta com sucesso', () => request(app)
     expect(response.body.name).toBe('#Acc1');
   }));
 
+test('Não deve inserir uma conta sem nome', () => request(app)
+  .post(MAIN_ROUTE)
+  .send({ user_id: user.id })
+  .then((response) => {
+    expect(response.statusCode).toBe(400);
+    expect(response.body.error).toBe('Nome é um atributo obrigatório.');
+  }));
+
 test('Deve listar todas as contas', () => app.services.accounts.save({ name: 'Acc list', user_id: user.id })
   .then(() => request(app)
     .get(MAIN_ROUTE)

@@ -6,7 +6,10 @@ module.exports = (app) => {
     .then((result) => res.status(200).json(result));
 
   const create = (req, res) => app.services.accounts.save(req.body)
-    .then((result) => res.status(201).json(result[0]));
+    .then((result) => {
+      if (result.error) return res.status(400).json(result);
+      return res.status(201).json(result[0]);
+    });
 
   const update = (req, res) => app.services.accounts.update(req.params.id, req.body)
     .then((result) => res.status(200).json(result[0]));
