@@ -1,7 +1,7 @@
 module.exports = (app) => {
-  const findAll = () => app.db('accounts').select();
+  const find = (filter = {}) => app.db('accounts').where(filter).select();
 
   const save = (account) => app.db('accounts').insert(account, '*');
 
-  return { save, findAll };
+  return { save, find };
 };

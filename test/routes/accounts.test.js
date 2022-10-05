@@ -31,3 +31,11 @@ test('Deve listar todas as contas', () => app.services.accounts.save({ name: 'Ac
       expect(response.statusCode).toBe(200);
       expect(response.body.length).toBeGreaterThan(0);
     })));
+
+test('Deve rotornar conta por Id', () => app.services.accounts.save({ name: 'AccId', user_id: user.id })
+  .then((response) => request(app).get(`${MAIN_ROUTE}/${response[0].id}`))
+  .then((response) => {
+    expect(response.statusCode).toBe(200);
+    expect(response.body.name).toBe('AccId');
+    expect(response.body.user_id).toBe(user.id);
+  }));
