@@ -10,11 +10,26 @@ test('Deve listar todos os usuários', () => request(app).get('/users')
     expect(response.body.length).toBeGreaterThan(0);
   }));
 
-test('Deve inserir usuário com sucesso', () => request(app).post('/users')
-  .send({ name: 'Walter Mitty', email, password: '12356' })
+test('Deve inserir usuário com sucesso', () => request(app)
+  .post('/users')
+  .send({ name: 'Walter Mitty', email: `*${email}`, password: '12356' })
   .then((response) => {
     expect(response.status).toBe(201);
     expect(response.body.name).toBe('Walter Mitty');
+    expect(response.body).not.toHaveProperty('password');
+  }));
+
+test('Deve armanezar senha criptografada', () => request(app)
+  .post('/users')
+  .send({ name: 'Walter Mitty', email, password: '12356' })
+  .then(async (response) => {
+    expect(response.status).toBe(201);
+    const { id } = response.body;
+    await app.services.users.findById({ id })
+      .then((users) => {
+        expect(users.password).not.toBeUndefined();
+        expect(users.password).not.toBe('12356');
+      });
   }));
 
 test('Não deve inserir usuário sem nome', () => request(app).post('/users/')
