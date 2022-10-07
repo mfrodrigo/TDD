@@ -2,14 +2,15 @@ const passport = require('passport');
 const passportJwt = require('passport-jwt');
 
 const secret = 'secret';
-const { Strategy, ExtractJwt } = passportJwt;
+const JwtStrategy = passportJwt.Strategy;
+const { ExtractJwt } = passportJwt;
 
 module.exports = (app) => {
   const params = {
     secretOrKey: secret,
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   };
-  const strategy = new Strategy(params, (payload, done) => {
+  const strategy = new JwtStrategy(params, (payload, done) => {
     app.services.users.findAll({ id: payload.id }).then((users) => {
       if (users.length > 0) done(null, { ...payload });
       else done(null, false);

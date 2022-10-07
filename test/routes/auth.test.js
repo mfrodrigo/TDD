@@ -3,6 +3,16 @@ const app = require('../../src/app');
 
 const email = `auth${Date.now()}@gmail.com`;
 
+test('Deve criar usuário via signup', () => request(app)
+  .post('/auth/signup')
+  .send({ name: 'signup', email: `signup${email}`, password: 'password' })
+  .then((response) => {
+    expect(response.status).toBe(201);
+    expect(response.body.name).toBe('signup');
+    expect(response.body.email).toBe(`signup${email}`);
+    expect(response.body).not.toHaveProperty('password');
+  }));
+
 test('Deve receber token ao logar', () => app.services.users
   .save({ name: 'Auth', email, password: '123456' })
   .then(() => request(app)
