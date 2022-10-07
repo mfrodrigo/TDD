@@ -5,7 +5,8 @@ module.exports = (app) => {
       .catch((err) => next(err));
   };
 
-  const create = async (req, res, next) => app.services.users.save(req.body)
+  const create = async (req, res, next) => app.services.users
+    .save(req.body)
     .then((users) => res.status(201).json(users[0]))
     .catch((err) => next(err));
 
