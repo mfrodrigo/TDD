@@ -1,10 +1,11 @@
 const request = require('supertest');
 const app = require('../../src/app');
 
+const MAIN_ROUTE = '/auth';
 const email = `auth${Date.now()}@gmail.com`;
 
 test('Deve criar usuário via signup', () => request(app)
-  .post('/auth/signup')
+  .post(`${MAIN_ROUTE}/signup`)
   .send({ name: 'signup', email: `signup${email}`, password: 'password' })
   .then((response) => {
     expect(response.status).toBe(201);
@@ -16,7 +17,7 @@ test('Deve criar usuário via signup', () => request(app)
 test('Deve receber token ao logar', () => app.services.users
   .save({ name: 'Auth', email, password: '123456' })
   .then(() => request(app)
-    .post('/auth/signin')
+    .post(`${MAIN_ROUTE}/signin`)
     .send({ email, password: '123456' }))
   .then((res) => {
     expect(res.status).toBe(200);
@@ -26,7 +27,7 @@ test('Deve receber token ao logar', () => app.services.users
 test('Não deve autenticar com senha errada', () => app.services.users
   .save({ name: 'Auth2', email: `auth2${email}`, password: '123456' })
   .then(() => request(app)
-    .post('/auth/signin')
+    .post(`${MAIN_ROUTE}/signin`)
     .send({ email: `auth2${email}`, password: '12456' }))
   .then((res) => {
     expect(res.status).toBe(400);
@@ -34,7 +35,7 @@ test('Não deve autenticar com senha errada', () => app.services.users
   }));
 
 test('Não deve autenticar com senha errada', () => request(app)
-  .post('/auth/signin')
+  .post(`${MAIN_ROUTE}/signin`)
   .send({ email: `auth3${email}`, password: '12456' })
   .then((res) => {
     expect(res.status).toBe(400);
@@ -42,7 +43,7 @@ test('Não deve autenticar com senha errada', () => request(app)
   }));
 
 test('Não deve acessar uma rota protegida sem o token', () => request(app)
-  .get('/users')
+  .get('/v1/users')
   .then((res) => {
     expect(res.status).toBe(401);
   }));
