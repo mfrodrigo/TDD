@@ -6,19 +6,21 @@ const MAIN_ROUTE = '/v1/accounts';
 let user;
 let user2;
 
-beforeAll(async () => {
-  const result = await app.services.users.save({
-    name: 'User Account',
-    email: `${Date.now()}@gmail.com`,
-    password: '123456',
-  });
+beforeEach(async () => {
+  const result = await app.services.users
+    .save({
+      name: 'User Account',
+      email: `${Date.now()}@gmail.com`,
+      password: '123456',
+    });
   user = { ...result[0] };
   user.token = jwt.encode(user, 'secret');
-  const result2 = await app.services.users.save({
-    name: 'User Account',
-    email: `2${Date.now()}@gmail.com`,
-    password: '123456',
-  });
+  const result2 = await app.services.users
+    .save({
+      name: 'User Account',
+      email: `2${Date.now()}@gmail.com`,
+      password: '123456',
+    });
   user2 = { ...result2[0] };
   user2.token = jwt.encode(user2, 'secret');
 });
