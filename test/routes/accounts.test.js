@@ -111,6 +111,16 @@ test('Deve alterar uma conta', () => app.services.accounts
       expect(response.body.name).toBe('Acc Updated');
     })));
 
+test('Não deve alterar uma conta de outro usuário', () => app.services.accounts
+  .save({ name: 'Acc To Update', user_id: user2.id })
+  .then((account) => request(app).put(`${MAIN_ROUTE}/${account[0].id}`)
+    .send({ name: 'Acc Updated' })
+    .set('authorization', `bearer ${user.token}`))
+  .then((response) => {
+    expect(response.status).toEqual(403);
+    expect(response.body.error).toEqual('Este recurso não perctence ao usuário.');
+  }));
+
 test('Deve remover uma conta', () => app.services.accounts
   .save({ name: 'Delete', user_id: user.id })
   .then((account) => request(app)
@@ -119,3 +129,13 @@ test('Deve remover uma conta', () => app.services.accounts
     .then((response) => {
       expect(response.status).toBe(204);
     })));
+
+test('Não deve remover uma conta de outro usuário', () => app.services.accounts
+  .save({ name: 'Delete', user_id: user2.id })
+  .then((account) => request(app)
+    .delete(`${MAIN_ROUTE}/${account[0].id}`)
+    .set('authorization', `bearer ${user.token}`))
+  .then((response) => {
+    expect(response.status).toEqual(403);
+    expect(response.body.error).toEqual('Este recurso não perctence ao usuário.');
+  }));

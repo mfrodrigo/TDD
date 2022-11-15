@@ -24,6 +24,7 @@ app.get('/', (req, res) => {
 app.use((err, req, res, next) => {
   const { name, message, stack } = err;
   if (name === 'ValidationError') res.status(400).send({ error: message });
+  if (name === 'ForbiddenError') res.status(403).send({ error: message });
   else res.status(500).send({ name, message, stack });
   next(err);
 });
