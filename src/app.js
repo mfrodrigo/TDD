@@ -1,14 +1,17 @@
 const app = require('express')();
 const consign = require('consign');
 const knex = require('knex');
+const morgan = require('morgan');
 const knexfile = require('../knexfile');
 
 // Todo: Criar chaveamento dinâmico
 app.db = knex(knexfile.test);
 
+app.use(morgan('dev'));
+
 consign({ cwd: 'src', verbose: false })
   .include('./config/passport.js')
-  .include('./config/middlewares.js')
+  .then('./config/middlewares.js')
   .then('./services')
   .then('./routes')
   .then('./config/router.js')
