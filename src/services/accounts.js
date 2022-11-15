@@ -5,6 +5,8 @@ module.exports = (app) => {
 
   const save = async (account) => {
     if (!account.name) throw new ValidationError('Nome é um atributo obrigatório.');
+    const accDb = await find({ name: account.name, user_id: account.user_id });
+    if (accDb) throw new ValidationError('Já existe uma conta com esse nome.');
     return app.db('accounts').insert(account, '*');
   };
 
