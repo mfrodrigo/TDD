@@ -15,7 +15,7 @@ consign({ cwd: 'src', verbose: false })
   .into(app);
 
 app.get('/', (req, res) => {
-  res.status(200).send();
+  res.status(200).send({ message: 'ok' });
 });
 
 app.use((err, req, res, next) => {
