@@ -15,7 +15,10 @@ module.exports = (app) => {
 
   router.get('/:id', (req, res, next) => app.services.accounts
     .find({ id: req.params.id })
-    .then((result) => res.status(200).json(result[0]))
+    .then((result) => {
+      if (result[0].user_id !== req.user.id) res.status(403).json({ error: 'Este recurso não perctence ao usuário.' });
+      res.status(200).json(result[0]);
+    })
     .catch((error) => next(error)));
 
   router.put('/:id', (req, res, next) => app.services.accounts

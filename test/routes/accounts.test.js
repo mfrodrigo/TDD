@@ -90,6 +90,17 @@ test('Deve rotornar conta por Id', () => app.services.accounts
     expect(response.body.user_id).toBe(user.id);
   }));
 
+test('Não deve retorna uma conta de outro usuário', () => app
+  .db('accounts')
+  .insert({ name: 'Acc user #2', user_id: user2.id }, ['id'])
+  .then((acc) => request(app)
+    .get(`${MAIN_ROUTE}/${acc[0].id}`)
+    .set('authorization', `bearer ${user.token}`))
+  .then((response) => {
+    expect(response.status).toEqual(403);
+    expect(response.body.error).toEqual('Este recurso não perctence ao usuário.');
+  }));
+
 test('Deve alterar uma conta', () => app.services.accounts
   .save({ name: 'Acc To Update', user_id: user.id })
   .then((account) => request(app).put(`${MAIN_ROUTE}/${account[0].id}`)
