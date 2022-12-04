@@ -5,7 +5,8 @@ module.exports = (app) => {
   const router = express.Router();
   router.post(
     '/signin',
-    (req, res, next) => app.services.users.findAll({ email: req.body.email })
+    (req, res, next) => app.services.users
+      .findAll({ email: req.body.email })
       .then((user) => {
         if (user.length === 0) throw new ValidationError('Usuário inválido.');
         return app.services.users.findById({ id: user[0].id });
