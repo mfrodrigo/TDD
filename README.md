@@ -34,3 +34,7 @@ If you need create new migration.
 ```angular2html
  knex migrate:make create_table_test --env test
 ```
+### Rollback
+```angular2html
+knex migrate:rollback --env test
+```
