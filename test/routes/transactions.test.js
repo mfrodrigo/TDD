@@ -7,7 +7,7 @@ let acc1;
 let acc2;
 let token;
 
-const MAIN_ROUTE = 'v1/transactions';
+const MAIN_ROUTE = '/v1/transactions';
 
 beforeAll(async () => {
   await app.db('transactions').del();
@@ -37,10 +37,10 @@ beforeAll(async () => {
 
 test('Deve listar apenas as transações do usuário', () => app.db('transactions').insert([
   {
-    description: 'T1', data: new Date(), ammount: 100, type: 'I', acc_id: acc1.id,
+    description: 'T1', date: new Date(), ammount: 100, type: 'I', acc_id: acc1.id,
   },
   {
-    description: 'T2', data: new Date(), ammount: 100, type: 'O', acc_id: acc2.id,
+    description: 'T2', date: new Date(), ammount: 100, type: 'O', acc_id: acc2.id,
   },
 ])
   .then(() => request(app)
@@ -48,4 +48,5 @@ test('Deve listar apenas as transações do usuário', () => app.db('transaction
     .set('authorization', `bearer ${token}`))
   .then((res) => {
     expect(res.status).toEqual(200);
+    expect(res.body[0].description).toEqual('T1');
   }));
