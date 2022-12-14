@@ -13,7 +13,7 @@ beforeAll(async () => {
   await app.db('transactions').del();
   await app.db('accounts').del();
   await app.db('users').del();
-  const users = await app.db('users').insert([
+  [user1, user2] = await app.db('users').insert([
     {
       name: 'user # 1',
       email: 'user1@example.com',
@@ -25,7 +25,6 @@ beforeAll(async () => {
       password: '$2a$10$Qe.guFzZmGfME2y7hjZ6pewJL3GC/PJbovIeUnVTEI7nFzko5wEH.',
     },
   ], '*');
-  [user1, user2] = users;
   [acc1] = await app.services.accounts.save({
     name: 'account # 1', user_id: user1.id,
   });
@@ -49,4 +48,15 @@ test('Deve listar apenas as transações do usuário', () => app.db('transaction
   .then((res) => {
     expect(res.status).toEqual(200);
     expect(res.body[0].description).toEqual('T1');
+  }));
+
+test('Deve inserir uma transação com sucesso', () => request(app)
+  .post(MAIN_ROUTE)
+  .set('authorization', `bearer ${token}`)
+  .send({
+    description: 'new T1', date: new Date(), ammount: 100, type: 'I', acc_id: acc1.id,
+  })
+  .then((res) => {
+    expect(res.statusCode).toEqual(201);
+    expect(res.body.acc_id).toEqual(acc1.id);
   }));

@@ -5,5 +5,9 @@ module.exports = (app) => {
     .where(filter)
     .andWhere('accounts.user_id', '=', userId);
 
-  return { find };
+  const create = (body) => app
+    .db('transactions')
+    .insert(body, '*');
+
+  return { find, create };
 };

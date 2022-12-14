@@ -8,5 +8,10 @@ module.exports = (app) => {
     .then((result) => res.status(200).json(result))
     .catch((error) => next(error)));
 
+  router.post('/', (req, res, next) => app.services.transactions
+    .create(req.body)
+    .then(([result]) => res.status(201).json(result))
+    .catch((error) => next(error)));
+
   return router;
 };
